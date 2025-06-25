@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.google.common.io.Files;
-import com.luciad.imageio.webp.WebPWriteParam;
 
 public class AtlasPackage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AtlasPackage.class);
@@ -301,26 +301,37 @@ public class AtlasPackage {
 			jsonManifest.put(jsonEntry);
 		}
 
-		atlases.parallelStream().forEach(atlas -> {
-			File fileAtlas = new File(folderAtlas, "atlas" + atlas.getId() + ".webp");
-
-			ImageWriter writer = ImageIO.getImageWritersByMIMEType("image/webp").next();
-			try {
-				try (ImageOutputStream ios = ImageIO.createImageOutputStream(fileAtlas)) {
-					writer.setOutput(ios);
-					WebPWriteParam param = new WebPWriteParam(writer.getLocale());
-					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-					param.setCompressionType(param.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
-					param.setCompressionQuality(0.9f);
-					writer.write(null, new IIOImage(atlas.getImage(), null, null), param);
-				} catch (IOException e) {
-					e.printStackTrace();
+		atlases.stream().forEach(atlas -> {
+			// Use PNG format for atlas generation
+			Iterator<ImageWriter> writerIterator = ImageIO.getImageWritersByFormatName("png");
+			String format = "png";
+			String fileExtension = ".png";
+			
+			if (!writerIterator.hasNext()) {
+				throw new RuntimeException("PNG writer not available!");
+			}
+			
+			ImageWriter writer = writerIterator.next();
+			try (ImageOutputStream ios = ImageIO.createImageOutputStream(new File(folderAtlas,
+					"atlas-" + atlas.getId() + fileExtension))) {
+				writer.setOutput(ios);
+				ImageWriteParam writeParam = writer.getDefaultWriteParam();
+				
+				if (writeParam.canWriteCompressed()) {
+					writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+					writeParam.setCompressionType("Deflate");
+					// Use moderate compression for good balance of size vs quality
+					writeParam.setCompressionQuality(0.9f);
 				}
+				
+				writer.write(null, new IIOImage(atlas.getImage(), null, null), writeParam);
+			} catch (IOException e) {
+				e.printStackTrace();
 			} finally {
 				writer.dispose();
 			}
 
-			LOGGER.info("Write Atlas: {}", fileAtlas.getAbsolutePath());
+			LOGGER.info("Write Atlas: {}", new File(folderAtlas, "atlas-" + atlas.getId() + fileExtension).getAbsolutePath());
 		});
 
 		Files.createParentDirs(fileManifest);
@@ -404,7 +415,23 @@ public class AtlasPackage {
 				.distinct().toArray();
 		LOGGER.info("Read Atlases: {} {}", folderAtlas.getAbsolutePath(), Arrays.toString(atlasIds));
 		atlases = Arrays.stream(atlasIds).parallel().mapToObj(id -> {
-			File fileAtlas = new File(folderAtlas, "atlas" + id + ".webp");
+			// Look for PNG atlas files (generated format)
+			File fileAtlasPNG = new File(folderAtlas, "atlas-" + id + ".png");
+			File fileAtlasWebP = new File(folderAtlas, "atlas-" + id + ".webp");
+			
+			File fileAtlas = null;
+			if (fileAtlasPNG.exists()) {
+				fileAtlas = fileAtlasPNG;
+			} else if (fileAtlasWebP.exists()) {
+				// Support legacy WebP files if they exist
+				fileAtlas = fileAtlasWebP;
+				LOGGER.info("Using legacy WebP atlas file: {}", fileAtlasWebP.getName());
+			} else {
+				LOGGER.error("No atlas file found for atlas {} (looking for PNG or WebP)", id);
+				System.exit(-1);
+				return null;
+			}
+			
 			try {
 				BufferedImage image = ImageIO.read(fileAtlas);
 				return Atlas.load(this, id, image);

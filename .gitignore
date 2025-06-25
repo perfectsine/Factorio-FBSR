@@ -5,3 +5,5 @@
 /FactorioBlueprintStringRenderer/tempdata
 /FactorioBlueprintStringRenderer/tempmods
 Factorio-FBSR.jar
+config.dev.json
+.DS_Store

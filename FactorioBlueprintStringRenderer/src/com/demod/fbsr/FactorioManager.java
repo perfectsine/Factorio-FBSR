@@ -374,7 +374,7 @@ public class FactorioManager {
 					fdConfig.put("executable", factorioExecutable.get());
 				}
 
-				FactorioData data = new FactorioData(fdConfig);
+				FactorioData data = FactorioData.fromConfig(fdConfig);
 				data.initialize(false);
 
 				ModsProfile profile = new ModsProfile(folderData, data, new AtlasPackage(folderData));
@@ -523,8 +523,8 @@ public class FactorioManager {
 
 			String detailMessage = String.format(
 					"Entity '%s' is already registered in group '%s' from mod '%s'. Attempted re-registration from mod '%s' is not allowed.",
-					name, existingFactory.getGroupName(), existingFactory.getProfile().getData().folderMods.getName(),
-					factory.getProfile().getData().folderMods.getName());
+					name, existingFactory.getGroupName(), existingFactory.getProfile().getData().getFolderMods().getName(),
+					factory.getProfile().getData().getFolderMods().getName());
 			throw new IllegalArgumentException(detailMessage);
 		}
 

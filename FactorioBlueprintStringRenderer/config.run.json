@@ -1,0 +1,50 @@
+{
+    "discord": {
+        "bot_token": "",
+        "command_prefix": "!",
+        "reporting_user_id": "",
+        "reporting_channel_id": "",
+        "hosting_channel_id": "",
+		"enabled": false
+    },
+    "reddit": {
+        "credentials": {
+            "username": "",
+            "password": "",
+            "client_id": "",
+            "client_secret": ""
+        },
+        "subreddit": "",
+        "summon_keyword": "!blueprint",
+        "refresh_seconds": 20,
+        "age_limit_hours": 24,
+        "process_messages": false,
+		"imgbb-api-key": "",
+		"enabled": false
+    },
+    "irc": {
+        "server": "",
+        "channel": "",
+        "name": "",
+        "password": "",
+        "command": "!blueprint",
+		"enabled": false
+    },
+    "webapi": {
+        "bind": "0.0.0.0",
+        "port": 8082,
+        "use-local-storage": false,
+        "local-storage": "YOUR_PATH_HERE"
+    },
+    "watchdog": {
+        "interval_minutes": 1
+    },
+    "logging": {
+        "file": "log.txt"
+    },
+    "watchdog_interval_minutes": 1,
+	"factorio_manager": {
+		"mods": "mods",
+		"data": "data"
+	}
+}

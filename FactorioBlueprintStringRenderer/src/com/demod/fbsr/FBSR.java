@@ -89,6 +89,8 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
 
+import javax.imageio.ImageIO;
+
 public class FBSR {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FBSR.class);
 

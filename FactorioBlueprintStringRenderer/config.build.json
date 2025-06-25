@@ -4,7 +4,8 @@
         "command_prefix": "!",
         "reporting_user_id": "",
         "reporting_channel_id": "",
-        "hosting_channel_id": ""
+        "hosting_channel_id": "",
+		"enabled": false
     },
     "reddit": {
         "credentials": {
@@ -17,21 +18,23 @@
         "summon_keyword": "!blueprint",
         "refresh_seconds": 20,
         "age_limit_hours": 24,
-        "process_messages": true,
-		"imgbb-api-key": ""
+        "process_messages": false,
+		"imgbb-api-key": "",
+		"enabled": false
     },
     "irc": {
         "server": "",
         "channel": "",
         "name": "",
         "password": "",
-        "command": "!blueprint"
+        "command": "!blueprint",
+		"enabled": false
     },
     "webapi": {
         "bind": "0.0.0.0",
-        "port": 80,
-        "use-local-storage": true,
-        "local-storage": "C:\\Blueprint Bot Images"
+        "port": 8082,
+        "use-local-storage": false,
+        "local-storage": "YOUR_PATH_HERE"
     },
     "watchdog": {
         "interval_minutes": 1
@@ -41,7 +44,8 @@
     },
     "watchdog_interval_minutes": 1,
 	"factorio_manager": {
-		"install": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio",
+		"install": "YOUR_PATH_HERE",
+		"executable": "YOUR_PATH_HERE",
 		"mods": "mods",
 		"data": "data",
 		"mod_portal_api": {

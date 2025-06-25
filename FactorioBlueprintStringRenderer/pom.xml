@@ -15,31 +15,55 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.14.0</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.4.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.demod.fbsr.app.StartAllServices</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/public/</url>
+		</repository>
 		<repository>
 			<id>jcenter</id>
 			<name>jcenter-bintray</name>
 			<url>https://jcenter.bintray.com</url>
 		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.2.13</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>20.0</version>
+			<version>32.1.2-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>com.demod.factorio</groupId>
@@ -75,13 +99,16 @@
 			<groupId>net.dean.jraw</groupId>
 			<artifactId>JRAW</artifactId>
 			<version>0.9.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/JRAW-0.9.0.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.rapidoid</groupId>
 			<artifactId>rapidoid-web</artifactId>
 			<version>5.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
@@ -99,9 +126,40 @@
 			<version>2.2.11</version>
 		</dependency>
 		<dependency>
-			<groupId>org.sejda.imageio</groupId>
-			<artifactId>webp-imageio</artifactId>
-			<version>0.1.6</version>
+			<groupId>com.twelvemonkeys.common</groupId>
+			<artifactId>common-lang</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.common</groupId>
+			<artifactId>common-io</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.common</groupId>
+			<artifactId>common-image</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-core</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-metadata</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<!-- Keep TwelveMonkeys for other image formats, but use PNG instead of WebP -->
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-tiff</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-jpeg</artifactId>
+			<version>3.12.0</version>
 		</dependency>
 	</dependencies>
 </project>
